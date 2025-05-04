@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Element Remover",
+    "version": "1.0",
+    "description": "Removes elements with a specific name from all pages",
+    "permissions": ["scripting", "activeTab"],
+    "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js", "eradicator.js", "youtube.js", "youtube_shorts.js", "facebook.js", "meta_threads.js", "reddit.js"],
+        "run_at": "document_idle"
+      }
+    ]
+  }
