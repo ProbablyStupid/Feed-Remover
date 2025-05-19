@@ -1,4 +1,10 @@
-// TODO: implement button logic!
+/**
+ * Note about this file:
+ * The structure may be horrible and a little bit bad to understand.
+ * 
+ * The goal is to update the buttons' colors and also changing the 
+ * entry in chrome.storage.
+ */
 
 console.log("index.js script!");
 
@@ -25,6 +31,8 @@ var removal = {
 chrome.storage.local.get('removal_settings', function e(result) {
     console.log("getting DATA!");
     removal = result;
+    console.log("results!!");
+    console.log(result);
     updateDOM (removal);
 });
 
@@ -35,9 +43,13 @@ function updateDOM (data) {
     console.log ("updating DOM!");
 
     function updateDiv (name, value) {
-        console.log("UPDATE DIV!");
+        console.log("Updating Div with name: ", name, "and value", value);
         el = document.getElementById(name);
-        button = el.getElementByTagName('button');
+        if (el != null) {
+            button = el.getElementsByTagName('button')[0];
+        } else {
+            console.log("el is null -> skipping.");
+        }
         if (value) {
             button.class = 'button_remove';
         } else {
@@ -56,23 +68,41 @@ function updateDOM (data) {
 // 3.1 get button array to process them in bulk
 
 // This is a terrible way of getting them.
-removalDivs = document.getElementsById('inline');
+removalDivs = document.getElementsByClassName('inline');
 
 var buttons = {};
 
 for (div of removalDivs) {
-    buttons[div.id] = div.getElementByTagName('button');
+    buttons[div.id] = div.getElementsByTagName('button')[0];
 }
 
-for (button in buttons) {
+for (let button in buttons) {
     buttons[button].addEventListener('click', () => {
-        saveSingleSetting();
+        console.log("Button: ", button, "object: ", buttons[button], " -> clicked");
+        saveSingleSetting(button, !removal[button]);
+        adjustButtonClass(buttons[button], removal[button]);
     });
+    console.log("event listener added for button", buttons[button]);
 }
 
 
 // Step 4: save new settings to browser storage
 
 function saveSingleSetting (settingsName, newSettingValue) {
-    // TODO: implement
+    removal[settingsName] = newSettingValue;
+    chrome.storage.local.set({'removal_settings': removal});
+}
+
+function adjustButtonClass (buttonObject, currentRemovalSetting) {
+    if (currentRemovalSetting) {
+        console.log("setting color of button object: ", buttonObject,
+            "to button_remove"
+        );
+        buttonObject.className = "button_remove";
+    } else {
+        console.log("setting color of button object: ", buttonObject,
+            "to button"
+        );
+        buttonObject.className = "button";
+    }
 }

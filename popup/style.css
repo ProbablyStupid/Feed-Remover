@@ -32,6 +32,9 @@ body {
 
 /* TODO: implement the different looks for a button that's indicating that a website is being removed. */
 .button_remove {
+    width: 100px;
+    margin-left: auto;
+    margin-right: 0;
     background-color: green;
 }
 
