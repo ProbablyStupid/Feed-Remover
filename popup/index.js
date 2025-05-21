@@ -50,6 +50,7 @@ function updateDOM (data) {
         } else {
             console.log("el is null -> skipping.");
         }
+        // TODO -> also change the text of the buttons "Remove" -> "Removing!" (when green). (and ofc vice versa)
         if (value) {
             button.class = 'button_remove';
         } else {
