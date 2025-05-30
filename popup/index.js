@@ -40,7 +40,7 @@ chrome.storage.local.get(['removal_settings'], function e(result) {
 
 function updateDOM (data) {
 
-    console.log ("updating DOM!");
+    console.log ("updating DOM! with data input: ", data);
 
     function updateDiv (name, value) {
         console.log("Updating Div with name: ", name, "and value", value);
@@ -50,9 +50,11 @@ function updateDOM (data) {
 
             // TODO -> also change the text of the buttons "Remove" -> "Removing!" (when green). (and ofc vice versa)
             if (value) {
-                button.class = 'button_remove';
+                button.className = 'button_remove';
+                console.log("updated class to button_remove!");
             } else {
-                button.class = 'button';
+                button.className = 'button';
+                console.log("updated class to button!");
             }
 
         } else {
@@ -60,9 +62,9 @@ function updateDOM (data) {
         }
     }
     
-    for (property in removal) {
-        updateDiv(property.name, property.value);
+    for (property in data['removal_settings']) {
         console.log(property);
+        updateDiv(property, data['removal_settings'][property]);
     }
 }
 
