@@ -28,7 +28,7 @@ var removal = {
     'threads': false
 };
 
-chrome.storage.local.get('removal_settings', function e(result) {
+chrome.storage.local.get(['removal_settings'], function e(result) {
     console.log("getting DATA!");
     removal = result;
     console.log("results!!");
@@ -47,14 +47,16 @@ function updateDOM (data) {
         el = document.getElementById(name);
         if (el != null) {
             button = el.getElementsByTagName('button')[0];
+
+            // TODO -> also change the text of the buttons "Remove" -> "Removing!" (when green). (and ofc vice versa)
+            if (value) {
+                button.class = 'button_remove';
+            } else {
+                button.class = 'button';
+            }
+
         } else {
             console.log("el is null -> skipping.");
-        }
-        // TODO -> also change the text of the buttons "Remove" -> "Removing!" (when green). (and ofc vice versa)
-        if (value) {
-            button.class = 'button_remove';
-        } else {
-            button.class = 'button';
         }
     }
     
@@ -91,6 +93,7 @@ for (let button in buttons) {
 
 function saveSingleSetting (settingsName, newSettingValue) {
     removal[settingsName] = newSettingValue;
+    // chrome.storage.local.set({'removal_settings': removal});
     chrome.storage.local.set({'removal_settings': removal});
 }
 
