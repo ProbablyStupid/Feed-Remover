@@ -20,7 +20,7 @@ console.log("index.js script!");
  * The global removal variable should always be kept up to date by the code.
  * (That couldn't possibly cause any issues...).
  */
-var removal = {
+var defaultRemovalSettings = {
     'youtube': false,
     'youtube-shorts': false,
     'reddit': false,
@@ -28,13 +28,13 @@ var removal = {
     'threads': false
 };
 
-chrome.storage.local.get(['removal_settings'], function e(result) {
-    console.log("getting DATA!");
-    removal = result;
-    console.log("results!!");
-    console.log(result);
-    updateDOM (removal);
-});
+async function validateRemovalSettings (browserStoreRemovalSettings) {
+    console.log("Validating: ", browserStoreRemovalSettings['removal_settings']);
+    if (browserStoreRemovalSettings['removal_settings'] === undefined) {
+        console.log("NO REMOVAL SETTINGS! Setting default...");
+        chrome.storage.local.set({'removal_settings': defaultRemovalSettings});
+    }
+}
 
 // Step 2: update HTML elements to reflect browser storage
 
@@ -68,6 +68,14 @@ function updateDOM (data) {
     }
 }
 
+chrome.storage.local.get(['removal_settings'], function e(result) {
+    console.log("getting DATA!");
+    removal = result;
+    console.log("results!!");
+    console.log(result);
+    validateRemovalSettings(result).then(updateDOM(removal));
+});
+
 // Step 3: interactivity -> enable or disable eradication of feeds
 
 // 3.1 get button array to process them in bulk
@@ -83,20 +91,33 @@ for (div of removalDivs) {
 
 for (let button in buttons) {
     buttons[button].addEventListener('click', () => {
-        console.log("Button: ", button, "object: ", buttons[button], " -> clicked");
-        saveSingleSetting(button, !removal[button]);
-        adjustButtonClass(buttons[button], removal[button]);
+
+        // TODO: maybe move the responsibility of getting the values from
+        // browser storage to a downstream function
+        chrome.storage.local.get(['removal_settings'], function e (result) {
+            removal = result['removal_settings'];
+            console.log("Button: ", button, "object: ", buttons[button], " -> clicked");
+            saveSingleSetting(button, !removal[button]);
+            adjustButtonClass(buttons[button], !removal[button]);
+        });
     });
     console.log("event listener added for button", buttons[button]);
 }
 
-
 // Step 4: save new settings to browser storage
 
 function saveSingleSetting (settingsName, newSettingValue) {
-    removal[settingsName] = newSettingValue;
+    // removal[settingsName] = newSettingValue;
+    // // chrome.storage.local.set({'removal_settings': removal});
     // chrome.storage.local.set({'removal_settings': removal});
-    chrome.storage.local.set({'removal_settings': removal});
+
+    chrome.storage.local.get(['removal_settings'], function e (result) {
+        console.log("! setting single setting result -> ", result);
+        settings = result['removal_settings'];
+        settings[settingsName] = newSettingValue;
+        chrome.storage.local.set({'removal_settings': settings});
+        console.log("Set new settings! see: ", settings);
+    });
 }
 
 function adjustButtonClass (buttonObject, currentRemovalSetting) {
