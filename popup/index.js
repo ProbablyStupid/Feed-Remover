@@ -99,12 +99,23 @@ for (let button in buttons) {
             console.log("Button: ", button, "object: ", buttons[button], " -> clicked");
             saveSingleSetting(button, !removal[button]);
             adjustButtonClass(buttons[button], !removal[button]);
+            adjustButtonText(buttons[button], getCurrentButtonText(!removal[button]));
         });
     });
     console.log("event listener added for button", buttons[button]);
 }
 
-// Step 4: save new settings to browser storage
+// Step 4?: Ensure that all displayed text is correct.
+
+chrome.storage.local.get(['removal_settings'], function e (result) {
+    removal = result['removal_settings'];
+    for (let button in buttons) {
+        adjustButtonClass(buttons[button], removal[button]);
+        adjustButtonText(buttons[button], getCurrentButtonText(removal[button]));
+    }
+});
+
+//// Step 4: save new settings to browser storage
 
 function saveSingleSetting (settingsName, newSettingValue) {
     // removal[settingsName] = newSettingValue;
@@ -132,4 +143,29 @@ function adjustButtonClass (buttonObject, currentRemovalSetting) {
         );
         buttonObject.className = "button";
     }
+}
+
+function getCurrentButtonText(booleanValue) {
+    // Maybe consider making these values global constants.
+    // But this also doesn't work badly.
+    if (booleanValue) {
+        return "Removing!";
+    }
+    else {
+        return "Click to remove!";
+    }
+}
+
+function adjustButtonText (buttonObject, newButtonText) {
+    // This only supports the architecture of the HTML popup
+    // that has the "button" as a div, containing a p element.
+    // Thus, it is a separate function to easily adapt to a 
+    // potential new architecture.
+
+    if (!buttonObject) {
+        console.warn("NOT A VALID BUTTON OBJECT!");
+        return;
+    }
+
+    buttonObject.innerText = newButtonText;
 }
