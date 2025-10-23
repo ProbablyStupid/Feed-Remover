@@ -1,6 +1,6 @@
 # Feed Remover
 
-A _very_ verbose and simple Google Chrome extension to remove social media newsfeeds. Heavily inspired by (News-Feed-Eradicator)[https://github.com/jordwest/news-feed-eradicator].
+A _very_ verbose and simple Google Chrome extension to remove social media newsfeeds. Heavily inspired by [News-Feed-Eradicator](https://github.com/jordwest/news-feed-eradicator).
 It sometimes removes a bit too much and is a bit clanky.
 
 ## Supported sites
