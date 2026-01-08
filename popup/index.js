@@ -115,12 +115,7 @@ chrome.storage.local.get(['removal_settings'], function e (result) {
     }
 });
 
-//// Step 4: save new settings to browser storage
-
 function saveSingleSetting (settingsName, newSettingValue) {
-    // removal[settingsName] = newSettingValue;
-    // // chrome.storage.local.set({'removal_settings': removal});
-    // chrome.storage.local.set({'removal_settings': removal});
 
     chrome.storage.local.get(['removal_settings'], function e (result) {
         console.log("! setting single setting result -> ", result);
